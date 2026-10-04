@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mambasplat4d"
+version = "1.0.0"
+readme = "README.md"
+description = "Rotation-invariant 4D Gaussian-splat sequence classification (MambaSplat-4D)"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "torch==2.10.0",
+    "hydra-core==1.3.2",
+    "omegaconf==2.3.0",
+    "tqdm",
+    "einops",
+    "timm",
+    "plyfile",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+logging = ["wandb"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

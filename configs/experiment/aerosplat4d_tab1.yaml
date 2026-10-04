@@ -1,0 +1,23 @@
+# @package _global_
+# Supplementary Tab. 1 (AeroSplat-4D-Open): experiment=aerosplat4d at N=1024 (all Gaussians
+# of the released files), E(C)/E(X) x train z/so3 x seeds 1-5 = 20 runs.
+#   python -m mambasplat4d.cli.train -m experiment=aerosplat4d_tab1
+# Without -m one cell runs, e.g. experiment=aerosplat4d_tab1 dataset.feature_mode=X rotation.train=z seed=1
+defaults:
+  - aerosplat4d
+  - _self_
+
+seed: 1
+
+dataset:
+  num_points: 1024
+
+hydra:
+  sweep:
+    dir:    ${paths.results_root}
+    subdir: ${run_name}/train_${rotation.train}/seed_${seed}
+  sweeper:
+    params:
+      dataset.feature_mode: C,X
+      rotation.train:       z,so3
+      seed:                 1,2,3,4,5

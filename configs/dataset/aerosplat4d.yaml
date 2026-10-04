@@ -1,0 +1,17 @@
+name: aerosplat4d
+data_root: ${paths.data_root}/${paths.subdirs.aerosplat4d}
+format: isaacsim_pre
+feature_mode: X          # X = all 14 Gaussian coefficients, C = centres only
+num_classes: 4
+num_points: 512
+num_workers: 4
+prefetch_factor: 2
+seq_len: 16
+frame_interval: 1
+n_versions: 1
+train_stride: 3
+version_per_frame: false
+
+augmentation:
+  scale_range: [0.9, 1.1]
+  scale_per_axis: true

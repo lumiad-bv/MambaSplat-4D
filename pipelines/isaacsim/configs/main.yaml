@@ -1,0 +1,36 @@
+# Shared settings for every run; config_batch.yaml deep-merged on top.
+
+fps: 30.0
+
+# Camera defaults (batch sweep overrides per job)
+cameras:
+  camera_type: "iphone6"
+  resolution: [1920, 1080]
+
+# Asset defaults
+drone:
+  wrap_with_mover: true
+  mover_prim_path: "/World/DroneMover"
+
+# Rendering defaults
+render:
+  passes:
+    rgb: true
+    instance_segmentation: true  # needed for masks
+
+  # Foreground masks from RTX path-tracer alpha (backgroundZeroAlpha writes sub-pixel
+  # coverage), which keeps thin rods and distant silhouettes; instance-seg is fallback.
+  mask:
+    method: "instance_seg"
+    alpha_threshold: 0  # 0-255; foreground if alpha > threshold. 0 correct:
+                         # backgroundZeroAlpha makes true background exactly 0.
+
+# Physics
+physics:
+  # Off for render-only runs: PhysX stage monitoring accumulates state and
+  # segfaults after many batch jobs.
+  enabled: false
+
+# Execution
+execution:
+  verbose: true

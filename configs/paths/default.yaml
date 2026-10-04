@@ -1,0 +1,8 @@
+# Machine-specific roots: env var (see .env.example), repo-relative fallback, CLI override:
+#   paths.data_root=/abs/or/relative/dir
+data_root:     ${oc.env:AEROSPLAT_DATA_ROOT,dataset}
+results_root:  ${oc.env:AEROSPLAT_RESULTS_ROOT,results}
+rotations_dir: ${oc.env:AEROSPLAT_ROTATIONS_DIR,dataset/rotation_cache}
+
+subdirs:
+  aerosplat4d: preprocessed_50-25-25_4class

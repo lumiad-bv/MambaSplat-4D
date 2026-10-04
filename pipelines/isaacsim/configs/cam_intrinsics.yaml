@@ -1,0 +1,326 @@
+# Camera intrinsics presets; selected by camera_type in main.yaml / config_batch.yaml.
+
+# TUM RGB-D Freiburg 2 (640x480), pinhole + radial-tangential (k1,k2,p1,p2,k3).
+simple_pinhole:
+  description: "TUM RGB-D Freiburg 2 RGB intrinsics (pinhole with 5-term radtan distortion). Good baseline for standard lenses."
+  pixel_size: 3.0
+  f_stop: 2.8
+  camera_matrix:
+    - [520.9, 0.0, 325.1]
+    - [0.0, 521.0, 249.7]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.2312, -0.7849, -0.0033, -0.0001, 0.9172]  # k1,k2,p1,p2,k3
+  original_resolution: [640, 480]
+  source: "https://cvg.cit.tum.de/data/datasets/rgbd-dataset/file_formats"
+
+# Intel RealSense T265 (ORB-SLAM3 config), Kannala-Brandt (KB4) fisheye.
+kannala_brandt:
+  description: "RealSense T265-style fisheye (Kannala-Brandt 4-coefficient) intrinsics."
+  pixel_size: 3.0
+  f_stop: 2.0
+  camera_matrix:
+    - [286.6408996582031, 0.0, 429.8493957519531]
+    - [0.0, 286.5458068847656, 393.5089111328125]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "kannala_brandt"
+  distortion_coefficients: [-0.011200119741261005, 0.05016331002116203, -0.04697997868061066, 0.0091929966583848]  # k1..k4
+  original_resolution: [848, 800]
+  source: "https://github.com/UZ-SLAMLab/ORB_SLAM3/issues/297"
+
+# TUM RGB-D Freiburg 3 (640x480), zero-distortion pinhole.
+no_distortion:
+  description: "TUM RGB-D Freiburg 3 RGB intrinsics (pinhole, zero distortion). Ideal when you want distortion-free projection."
+  pixel_size: 3.0
+  f_stop: 0.0  # disable depth of field
+  camera_matrix:
+    - [535.4, 0.0, 320.1]
+    - [0.0, 539.2, 247.6]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.0, 0.0, 0.0, 0.0, 0.0]
+  original_resolution: [640, 480]
+  source: "https://cvg.cit.tum.de/data/datasets/rgbd-dataset/file_formats"
+
+# Pinhole with full 8-coefficient distortion.
+advanced_pinhole:
+  description: "High-precision pinhole camera with full 8-coefficient distortion correction."
+  pixel_size: 3.0
+  f_stop: 1.8
+  camera_matrix:
+    - [958.8, 0.0, 960.0]
+    - [0.0, 956.7, 600.0]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.14, -0.03, -0.0002, -0.00003, 0.009, 0.5, -0.07, 0.017]  # k1,k2,p1,p2,k3,k4,k5,k6
+
+# OpenCV fisheye (equidistant / KB4).
+fisheye:
+  description: "OpenCV fisheye (equidistant / KB4) style configuration."
+  pixel_size: 3.0
+  f_stop: 2.0
+  camera_matrix:
+    - [455.8, 0.0, 960.0]
+    - [0.0, 454.7, 600.0]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "fisheye"
+  distortion_coefficients: [0.05, 0.01, -0.003, -0.0005]
+
+# iPhone X video mode (1920×1080) calibration.
+iphone_x_video:
+  description: "iPhone X rear camera, video(1920×1080) calibration from user-reported values"
+  pixel_size: 3.0
+  f_stop: 1.8
+  camera_matrix:
+    - [1975.47873, 0.0, 1060.77279]
+    - [0.0, 2053.41424, 513.500761]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.37367123, -1.29505304, -0.01482113, 0.01368264, 0.92461805]  # k1,k2,p1,p2,k3
+  original_resolution: [2560, 1440]
+  source: "https://stackoverflow.com/questions/50402026/what-is-the-intrinsicmatrix-for-an-iphone-x-rear-camera"
+
+# Traffic / surveillance camera from published calibration.
+traffic_cam_example:
+  description: "Traffic / street camera example calibration (from academic camera calibration literature)"
+  pixel_size: 3.0
+  f_stop: 2.8
+  camera_matrix:
+    - [2078.0, 0.0, 1024.0]
+    - [0.0, 2075.0, 768.0]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.12, -0.09, 0.001, 0.0004, 0.0]
+  original_resolution: [2048, 1536]
+  source: "camera calibration literature (e.g. automatic traffic camera calibration papers)"
+
+# Generic 1080p (~2 MP) IP surveillance camera.
+ip_cam_generic_1080p:
+  description: "Typical IP surveillance camera 1080p (~2 MP) intrinsics as placeholder (mild distortion)"
+  pixel_size: 3.0
+  f_stop: 2.8
+  camera_matrix:
+    - [1500.0, 0.0, 960.0]
+    - [0.0, 1500.0, 540.0]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.05, -0.02, 0.001, 0.0005, 0.0]
+  original_resolution: [1920, 1080]
+  source: "adapted from typical IP / CCTV lens calibration assumptions"
+
+ip_cam_2k:
+  description: "Ugreen matrix adapted camera 2K (~4 MP) intrinsics as placeholder (mild distortion)"
+  pixel_size: 3.0
+  f_stop: 0.0
+  camera_matrix:
+    - [1969.29389875117, 0, 816.454819988224]
+    - [0, 1923.98226987042, 522.277892545547]
+    - [0, 0, 1]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.05, -0.02, 0.001, 0.0005, 0.0]
+  original_resolution: [2560, 1440]
+  source: "adapted from Ugreen webcam + lens calibration assumptions"
+
+
+Ugreen_webcam:
+  description: "OpenCV camera intrinsics (opencv_brown_conrady)."
+  pixel_size: 3.0
+  f_stop: 2.8
+  camera_matrix:
+    - [1969.29389875117, 0, 816.454819988224]
+    - [0, 1923.98226987042, 522.277892545547]
+    - [0, 0, 1]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.477496537789747, -1.36670178942399, 0.000464826249385278, -0.0748383802080843, 1.05358227009319]
+  original_resolution: [2560, 1440]
+
+# Drone-tracking dataset cameras:
+# https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration
+
+gopro3:
+  description: "GoPro Hero 3 wide-angle action camera (1080p @ ~60fps)"
+  pixel_size: 3.0
+  f_stop: 2.8
+  camera_matrix:
+    - [874.4721846047786, 0.0, 970.2688358898922]
+    - [0.0, 894.1080937815644, 531.2757796052425]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [-0.260720634999793, 0.07494782427852716, -0.00013631462898833923, 0.00017484761775924765, -0.00906247784302948]
+  original_resolution: [1920, 1080]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/gopro3"
+
+iphone6:
+  description: "Apple iPhone 6 rear camera (1080p @ ~30fps)"
+  pixel_size: 3.0
+  f_stop: 2.2
+  camera_matrix:
+    - [1945.328496068825, 0.0, 948.176439545941]
+    - [0.0, 1941.830634580803, 544.789529245064]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.03746860545, 0.229379500547, 0.000791859844, -0.000579706924, -0.788715648076]
+  original_resolution: [1920, 1080]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/iphone6"
+
+mate10:
+  description: "Huawei Mate 10 rear camera (4K @ ~30fps)"
+  pixel_size: 3.0
+  f_stop: 1.6
+  camera_matrix:
+    - [3264.997613980756, 0.0, 1871.0028562370057]
+    - [0.0, 3245.0203739800636, 1002.0844321863265]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.18419266153533212, -0.7557852934198697, -0.0013645512787729467, -0.002783809883555535, 0.9397964121421092]
+  original_resolution: [3840, 2160]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/mate10"
+
+mate7:
+  description: "Huawei Mate 7 rear camera (1080p @ 30fps)"
+  pixel_size: 3.0
+  f_stop: 2.0
+  camera_matrix:
+    - [1569.2133510353567, 0.0, 956.6414016207103]
+    - [0.0, 1572.0082312735778, 533.1129574904855]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.1888803002995303, -0.6268259695581048, -0.0014010104725158184, 0.0003932341772251142, 0.6061741343069857]
+  original_resolution: [1920, 1080]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/mate7"
+
+mi9:
+  description: "Xiaomi Mi 9 rear camera (4K @ ~60fps)"
+  pixel_size: 3.0
+  f_stop: 1.75
+  camera_matrix:
+    - [3246.285791455408, 0.0, 1914.488406330452]
+    - [0.0, 3246.932673937576, 1100.230583880599]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.153764668914, -0.72245200838, -0.000481019021, -0.000862300392, 0.958181919942]
+  original_resolution: [3840, 2160]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/mi9"
+
+p20pro:
+  description: "Huawei P20 Pro rear camera (1080p @ ~30fps)"
+  pixel_size: 3.0
+  f_stop: 1.8
+  camera_matrix:
+    - [1918.685, 0.0, 965.581]
+    - [0.0, 1914.767898726004, 550.550]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.029412094519, -0.059510767134, 0.001856271031, 0.002269135198, 0.276425764319]
+  original_resolution: [1920, 1080]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/p20pro"
+
+sony5100:
+  description: "Sony Alpha 5100 mirrorless camera (1080p @ ~30fps)"
+  pixel_size: 3.0
+  f_stop: 3.5
+  camera_matrix:
+    - [1545.425401191011, 0.0, 971.158336917263]
+    - [0.0, 1545.96703364831, 535.682080735544]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [-0.011232359677, 0.045931232417, 0.000263868094, -0.001253638454, -0.151703077572]
+  original_resolution: [1920, 1080]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/sony5100"
+
+sony5n_1440x1080:
+  description: "Sony NEX-5N mirrorless camera (1440x1080 @ 25fps)"
+  pixel_size: 3.0
+  f_stop: 3.5
+  camera_matrix:
+    - [1176.899407018602, 0.0, 702.661410507918]
+    - [0.0, 1572.936467868805, 532.023006642381]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [-0.104075713538, 0.141342139932, -0.000084551089, -0.000391293455, -0.068036995013]
+  original_resolution: [1440, 1080]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/sony5n_1440x1080"
+
+sony5n_1920x1080:
+  description: "Sony NEX-5N mirrorless camera (1920x1080 @ 25fps)"
+  pixel_size: 3.0
+  f_stop: 3.5
+  camera_matrix:
+    - [1578.69696, 0.0, 934.913658]
+    - [0.0, 1580.83361, 530.715208]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [-0.100465029816, 0.120116061334, -0.000021122211, -0.000529483424, -0.030667978139]
+  original_resolution: [1920, 1080]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/sony5n_1920x1080"
+
+sonyG_1:
+  description: "Sony RX100 series compact camera, variant 1 (1080p @ 50fps)"
+  pixel_size: 3.0
+  f_stop: 1.8
+  camera_matrix:
+    - [1506.6612, 0.0, 966.6623]
+    - [0.0, 1505.2822, 530.2608]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [-0.006673507597820779, 0.007775663251591633, 0.0, 0.0, 0.0]
+  original_resolution: [1920, 1080]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/sonyG"
+
+sonyG_2:
+  description: "Sony RX100 series compact camera, variant 2 (1080p @ 50fps)"
+  pixel_size: 3.0
+  f_stop: 1.8
+  camera_matrix:
+    - [1462.25070, 0.0, 964.323701]
+    - [0.0, 1459.38619, 521.746261]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [-0.01138245, 0.05761171, -0.00404655, 0.00129544, -0.08078567]
+  original_resolution: [1920, 1080]
+  source: "https://github.com/CenekAlbl/drone-tracking-datasets/tree/master/calibration/sonyG"
+
+# LGM (Large Multi-View Gaussian Model) canonical camera, https://arxiv.org/abs/2402.05054
+
+lgm_pinhole:
+  description: "LGM canonical pinhole camera (49.1 deg VFOV, 256x256, zero distortion). Matches LGM training data from MVDream."
+  pixel_size: 3.0
+  f_stop: 0.0  # disable depth of field
+  camera_matrix:
+    # focal = 128 / tan(49.1/2 deg) = 280.22 px;  cx = cy = 128.0
+    - [280.22, 0.0, 128.0]
+    - [0.0, 280.22, 128.0]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.0, 0.0, 0.0, 0.0, 0.0]
+  original_resolution: [256, 256]
+  source: "LGM paper (arXiv:2402.05054) — fovy=49.1 deg, cam_radius=1.5, input_size=256"
+
+
+custom_1440p_30deg_pinhole:
+  description: "Custom 1440p canonical pinhole camera (30.0 deg VFOV, 2560x1440, zero distortion)."
+  pixel_size: 3.0
+  f_stop: 0.0  # disable depth of field
+  camera_matrix:
+    # focal = 720 / tan(30.0/2 deg) = 2687.08 px;  cx = 1280.0, cy = 720.0
+    - [2687.08, 0.0, 1280.0]
+    - [0.0, 2687.08, 720.0]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.0, 0.0, 0.0, 0.0, 0.0]
+  original_resolution: [2560, 1440]
+  source: "Custom configuration — fovy=30.0 deg, input_size=2560x1440"
+
+custom_4k_30deg_pinhole:
+  description: "Custom 4K canonical pinhole camera (30.0 deg VFOV, 3840x2160, zero distortion)."
+  pixel_size: 3.0
+  f_stop: 0.0  # disable depth of field
+  camera_matrix:
+    # focal = 1080 / tan(30.0/2 deg) = 4030.61 px;  cx = 1920.0, cy = 1080.0
+    - [4030.61, 0.0, 1920.0]
+    - [0.0, 4030.61, 1080.0]
+    - [0.0, 0.0, 1.0]
+  distortion_model: "pinhole"
+  distortion_coefficients: [0.0, 0.0, 0.0, 0.0, 0.0]
+  original_resolution: [3840, 2160]
+  source: "Custom configuration — fovy=30.0 deg, input_size=3840x2160"

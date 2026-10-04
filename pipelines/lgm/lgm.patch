@@ -1,0 +1,211 @@
+diff --git a/core/gs.py b/core/gs.py
+index a1a56c6..22ea44d 100644
+--- a/core/gs.py
++++ b/core/gs.py
+@@ -39,6 +39,7 @@ class GaussianRenderer:
+         # loop of loop...
+         images = []
+         alphas = []
++        depths = []
+         for b in range(B):
+ 
+             # pos, opacity, scale, rotation, shs
+@@ -48,6 +49,23 @@ class GaussianRenderer:
+             rotations = gaussians[b, :, 7:11].contiguous().float()
+             rgbs = gaussians[b, :, 11:].contiguous().float() # [N, 3]
+ 
++            # Sanitize: mask out NaN/Inf Gaussians by zeroing opacity.
++            bad = (
++                means3D.isnan().any(dim=-1)
++                | means3D.isinf().any(dim=-1)
++                | scales.isnan().any(dim=-1)
++                | scales.isinf().any(dim=-1)
++                | opacity.squeeze(-1).isnan()
++                | opacity.squeeze(-1).isinf()
++            )
++            if bad.any():
++                opacity = opacity.clone()
++                opacity[bad] = 0.0
++                means3D = means3D.clone()
++                means3D[bad] = 0.0
++                scales = scales.clone()
++                scales[bad] = 1e-6
++
+             for v in range(V):
+                 
+                 # render novel views
+@@ -72,10 +90,13 @@ class GaussianRenderer:
+ 
+                 rasterizer = GaussianRasterizer(raster_settings=raster_settings)
+ 
++                means2D = torch.zeros_like(means3D, dtype=torch.float32, device=device)
++
+                 # Rasterize visible Gaussians to image, obtain their radii (on screen).
++                # ashawkey's fork returns (image, radii, depth, alpha) in a single pass.
+                 rendered_image, radii, rendered_depth, rendered_alpha = rasterizer(
+                     means3D=means3D,
+-                    means2D=torch.zeros_like(means3D, dtype=torch.float32, device=device),
++                    means2D=means2D,
+                     shs=None,
+                     colors_precomp=rgbs,
+                     opacities=opacity,
+@@ -88,13 +109,16 @@ class GaussianRenderer:
+ 
+                 images.append(rendered_image)
+                 alphas.append(rendered_alpha)
++                depths.append(rendered_depth)
+ 
+         images = torch.stack(images, dim=0).view(B, V, 3, self.opt.output_size, self.opt.output_size)
+         alphas = torch.stack(alphas, dim=0).view(B, V, 1, self.opt.output_size, self.opt.output_size)
++        depths = torch.stack(depths, dim=0).view(B, V, 1, self.opt.output_size, self.opt.output_size)
+ 
+         return {
+             "image": images, # [B, V, 3, H, W]
+             "alpha": alphas, # [B, V, 1, H, W]
++            "depth": depths, # [B, V, 1, H, W]
+         }
+ 
+ 
+diff --git a/core/models.py b/core/models.py
+index 5b8bf32..0448213 100644
+--- a/core/models.py
++++ b/core/models.py
+@@ -58,16 +58,16 @@ class LGM(nn.Module):
+         return state_dict
+ 
+ 
+-    def prepare_default_rays(self, device, elevation=0):
+-        
++    def prepare_default_rays(self, device, elevation=0, azimuth_offset=0):
++
+         from kiui.cam import orbit_camera
+         from core.utils import get_rays
+ 
+         cam_poses = np.stack([
+-            orbit_camera(elevation, 0, radius=self.opt.cam_radius),
+-            orbit_camera(elevation, 90, radius=self.opt.cam_radius),
+-            orbit_camera(elevation, 180, radius=self.opt.cam_radius),
+-            orbit_camera(elevation, 270, radius=self.opt.cam_radius),
++            orbit_camera(elevation, azimuth_offset + 0, radius=self.opt.cam_radius),
++            orbit_camera(elevation, azimuth_offset + 90, radius=self.opt.cam_radius),
++            orbit_camera(elevation, azimuth_offset + 180, radius=self.opt.cam_radius),
++            orbit_camera(elevation, azimuth_offset + 270, radius=self.opt.cam_radius),
+         ], axis=0) # [4, 4, 4]
+         cam_poses = torch.from_numpy(cam_poses)
+ 
+@@ -129,26 +129,28 @@ class LGM(nn.Module):
+         # use the first view to predict gaussians
+         gaussians = self.forward_gaussians(images) # [B, N, 14]
+ 
+-        results['gaussians'] = gaussians
+-
+         # always use white bg
+         bg_color = torch.ones(3, dtype=torch.float32, device=gaussians.device)
+-        
++
+         # use the other views for rendering and supervision
+         results = self.gs.render(gaussians, data['cam_view'], data['cam_view_proj'], data['cam_pos'], bg_color=bg_color)
++        results['gaussians'] = gaussians
+         pred_images = results['image'] # [B, V, C, output_size, output_size]
+         pred_alphas = results['alpha'] # [B, V, 1, output_size, output_size]
++        pred_depths = results['depth'] # [B, V, 1, output_size, output_size]
+ 
+         results['images_pred'] = pred_images
+         results['alphas_pred'] = pred_alphas
++        results['depths_pred'] = pred_depths
+ 
+         gt_images = data['images_output'] # [B, V, 3, output_size, output_size], ground-truth novel views
+         gt_masks = data['masks_output'] # [B, V, 1, output_size, output_size], ground-truth masks
+ 
+         gt_images = gt_images * gt_masks + bg_color.view(1, 1, 3, 1, 1) * (1 - gt_masks)
+ 
+-        loss_mse = F.mse_loss(pred_images, gt_images) + F.mse_loss(pred_alphas, gt_masks)
+-        loss = loss + loss_mse
++        loss_mse = F.mse_loss(pred_images, gt_images)
++        loss_alpha = F.mse_loss(pred_alphas, gt_masks)
++        loss = loss + loss_mse + self.opt.lambda_alpha * loss_alpha
+ 
+         if self.opt.lambda_lpips > 0:
+             loss_lpips = self.lpips_loss(
+diff --git a/core/options.py b/core/options.py
+index 4cc3194..4d5a737 100644
+--- a/core/options.py
++++ b/core/options.py
+@@ -20,10 +20,14 @@ class Options:
+     output_size: int = 256
+ 
+     ### dataset
+-    # data mode (only support s3 now)
+-    data_mode: Literal['s3'] = 's3'
++    # data mode ('s3' for original S3 provider, 'torch_chunks' for DepthSplat .torch files)
++    data_mode: Literal['s3', 'torch_chunks'] = 'torch_chunks'
+     # fovy of the dataset
+-    fovy: float = 49.1
++    fovy: float = 50.0
++    # root directory for torch_chunks data
++    data_root: str = ''
++    # path to file listing UIDs to exclude from training (one per line)
++    exclude_uids_file: Optional[str] = None
+     # camera near plane
+     znear: float = 0.5
+     # camera far plane
+@@ -50,6 +54,8 @@ class Options:
+     num_epochs: int = 30
+     # lpips loss weight
+     lambda_lpips: float = 1.0
++    # alpha loss weight (1.0 matches original LGM equal weighting)
++    lambda_alpha: float = 1.0
+     # gradient clip
+     gradient_clip: float = 1.0
+     # mixed precision
+@@ -60,11 +66,29 @@ class Options:
+     prob_grid_distortion: float = 0.5
+     # augmentation prob for camera jitter
+     prob_cam_jitter: float = 0.5
++    # augmentation prob for horizontal flip
++    prob_flip: float = 0.0
++    # step-based training (0 = use epoch-based num_epochs instead)
++    max_steps: int = 0
++    # torch.compile the UNet for reduced memory and faster training
++    torch_compile: bool = True
++    # number of warmup steps for OneCycleLR scheduler
++    warmup_steps: int = 3000
+ 
+     ### testing
+     # test image path
+     test_path: Optional[str] = None
+ 
++    ### logging
++    # wandb project name (set to empty string to disable wandb)
++    wandb_project: str = 'lgm-objaverse'
++    # wandb run name (auto-generated if empty)
++    wandb_name: str = ''
++    # log image comparisons every N training steps
++    log_image_every: int = 500
++    # log scalars every N training steps
++    log_scalar_every: int = 100
++
+     ### misc
+     # nvdiffrast backend setting
+     force_cuda_rast: bool = False
+@@ -77,7 +101,10 @@ config_defaults: Dict[str, Options] = {}
+ config_doc: Dict[str, str] = {}
+ 
+ config_doc['lrm'] = 'the default settings for LGM'
+-config_defaults['lrm'] = Options()
++config_defaults['lrm'] = Options(
++    fovy=50.0,
++    data_mode='torch_chunks',
++)
+ 
+ config_doc['small'] = 'small model with lower resolution Gaussians'
+ config_defaults['small'] = Options(
+@@ -87,6 +114,8 @@ config_defaults['small'] = Options(
+     batch_size=8,
+     gradient_accumulation_steps=1,
+     mixed_precision='bf16',
++    fovy=50.0,
++    data_mode='torch_chunks',
+ )
+ 
+ config_doc['big'] = 'big model with higher resolution Gaussians'

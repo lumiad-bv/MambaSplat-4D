@@ -1,0 +1,49 @@
+defaults:
+  - _self_
+  - paths: default
+  - spatial: vn_3dgs
+  - temporal: vn_mamba
+  - bridge: vn_bridge
+  - dataset: aerosplat4d
+  - training: aerosplat4d
+  - optional experiment: null
+
+seed: 42
+run_name: none
+embed_dim: 384
+num_classes: ${dataset.num_classes}
+
+rotation:
+  train: none     # none | z | so3
+  test: none      # none | z | so3
+
+wandb:
+  enabled: false
+  entity: null
+  project: mambasplat4d
+  name: null
+  tags: []
+  group: null
+  notes: null
+  mode: disabled  # online, offline, disabled
+
+  log_freq: 10
+  log_model: true
+  watch_model: false
+  watch_freq: 100
+
+# Rotation-robustness eval (mambasplat4d.cli.eval_rotation). Haar rotation cache built
+# under rotations_dir on first use, keyed by seed/seq_len/frame_interval/n_trials.
+rotation_eval:
+  n_trials: 3
+  rotations_dir: ${paths.rotations_dir}
+  eval_mode: streaming
+  splits: test
+  modes: [none, z, so3, so3_per_frame]   # test-time rotation protocols
+  allow_inline: false        # true: cache miss falls back to inline sampling
+
+hardware:
+  device: cuda               # cuda, cpu, or auto
+  precision: bf16            # 32, 16, or bf16
+  compile: true              # torch.compile; keep on, VN backward OOMs without it
+  compile_mode: default      # default, reduce-overhead, or max-autotune

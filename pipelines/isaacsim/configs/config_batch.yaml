@@ -1,0 +1,66 @@
+# AeroSplat-4D acquisition sweep: every asset at 10 radii x 2 elevations, white
+# background, four static pinhole cameras (90 deg apart, 45 deg offset), per-asset
+# deterministic random flight direction.
+#
+# Radii: octave cascade (2,4,8,16,32,64) plus round anchors (100,140,200,280);
+# object pixel size halves per octave. radius = fx_scaled * object_width / target_px,
+# fx_scaled = 280.24 * (2560/256) = 2802.4 px, object_width = 1 m (normalised):
+#   2m 1401px, 4m 701px, 8m 350px, 16m 175px, 32m 88px,
+#   64m 44px, 100m 28px, 140m 20px, 200m 14px, 280m 10px
+# 30 frames per radius at 30 fps = 1 s per sequence.
+#
+# batch_render.py deep-merges this on top of main.yaml.
+# Usage: ./run_batch.sh --dry-run ; ./run_batch.sh
+
+# Assets: keys of asset_config.yaml. Paper's 91 assets listed in
+# assets/splits/train-test-val_split.yaml.
+assets:
+  - "crow.usdc"
+  - "DJI Inspire 3.usdc"
+  - "Helicopter_EC135_Special_Forces.usdc"
+  - "cargo-aircraft.usdc"
+
+# LGM preset: four static cameras at 0/90/180/270 deg (+ azimuth offset)
+lgm:
+  enabled: true
+  radii: [2, 4, 8, 16, 32, 64, 100, 140, 200, 280]
+  elevations: [-20, 20] # 0 deg dropped, misses wings
+  center: [0.0, 0.0, 0.0]
+  azimuth_offset: [45]
+  resolution: [2560, 1440] # headroom for LGM crop + downscale
+
+# Other rigs: lgm.enabled: false, then one placement:
+# cameras:
+#   placement: "sphere"            # Fibonacci lattice around centre
+#   sphere:
+#     radii: [25.0]
+#     num_cameras: 5
+#     center: [0.0, 0.0, 0.0]
+#     hemisphere: "full"           # full | upper | lower
+# cameras:
+#   placement: "circle"            # ground ring aimed at one point
+#   circle:
+#     num_cameras: 5
+#     side_meters: [100.0]         # ring diameter
+#     cam_heights: [37.0]
+#     rotation_offsets: [0.0]      # radians
+#     aim_point_height_offsets: [-15.0]
+# camera_types: ["no_distortion"]  # keys of cam_intrinsics.yaml
+
+# Flight path
+waypoint: [0.0, 0.0, 0.0]
+flight_distance: 0.0                  # metres over sequence; 0 = static at waypoint
+flight_direction: "random"            # per-asset deterministic random, or [dx, dy, dz]
+random_elevation_range: [-20, 20]     # deg, elevation bounds of random direction
+
+# Animation
+animation_speed_factors:
+  - 3.0
+
+# Rendering
+render:
+  num_frames: 30
+
+# Output
+output:
+  base_path: "${AEROSPLAT_RENDER_ROOT}/aerosplat4d_renders"

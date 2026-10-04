@@ -1,0 +1,74 @@
+# Asset-disjoint train / val / test split of the AeroSplat-4D assets
+
+
+bird:
+  train:
+    - animated_eagle
+    - bald-eagle-med-poly
+    - cacau
+    - canada-goose-in-flight
+    - crow
+    - crow-fly
+    - owl
+    - phoenix
+    - pigeon-white
+  val:
+    - Crow_-_Hello_Neighbor_2
+    - Paloma_animada
+    - jin-diao-vulture-kung-fu-panda-chi-master
+    - white-eagle-animation-fast-fly
+  test:
+    - 20_Owl_merged
+    - Quetzal_Animation
+    - animated-bird-pigeon
+    - dove-bird-rigged
+
+drone:
+  train:
+    - DJI_Inspire_2
+    - quadcopter-dji-matrice-300-rtk
+    - FPV-drone
+    - Race_Drone_-_Hunter
+  val:
+    - dji_drone_dji_drone
+    - Race_Drone_-_Scout
+  test:
+    - DJI_Inspire_3
+    - fpv-drone-without-a
+
+airplane:
+  train:
+    - Aerobatic-Airplane
+    - Air_Tractor_AT-502
+    - Airplane_CRJ-900_Cityjet
+    - Airplane_tomations
+    - Boeing_747-100
+    - Low-poly-Airplane
+    - Soko_G-4_Super_Galeb
+  val:
+    - BOEING-STEARMAN_MODEL_75
+    - Grumman_F4F_Wildcat_Airplane
+    - Vintage_Toy_Airplane
+    - cargo-aircraft
+  test:
+    - 1956_L-1049G_Super_Constellation_Full_Interior
+    - Airplane_A380
+    - Cesna-Airplane
+    - FMA_IA_58_Pucara
+
+helicopter:
+  train:
+    - Airbus-Helicopter-S365-Dauphin
+    - Dolphin_Helicopter__AS-365_Harbin_Z-9_
+    - Helicopter_irs1182
+    - Helicopter_surveytown
+    - MD-500_Defender_Helicopter
+    - MD_Helicopters_MD-902_Explorer
+  val:
+    - Attack-Helicopter
+    - Bell_Huey_helicopter
+    - EC_135
+  test:
+    - Helicopter_EC135_Special_Forces
+    - Helicopter_Military
+    - Merlin_MK2_Helicopter

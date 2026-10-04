@@ -1,0 +1,18 @@
+# VN-In bridge (learned equivariant frame -> SO(3)-invariant scalars), then stack of
+# standard Mamba blocks.
+name: vn_mamba
+feature_mode: ${dataset.feature_mode}
+
+input_dim: ${spatial.dim}
+hidden_dim: 256
+n_layers: 4
+pos_encoding: sinusoidal
+max_seq_len: 512
+
+dropout: 0.05
+drop_path: 0.0
+pooling: mean
+
+freeze: false
+pretrained_ckpt: null
+lr_mult: 1.0

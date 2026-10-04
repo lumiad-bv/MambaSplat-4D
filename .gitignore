@@ -1,0 +1,52 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+/build/
+/dist/
+.venv/
+
+# Weights, run outputs, caches
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+checkpoints/
+/models/
+pretrained/
+/results/
+/outputs/
+/multirun/
+wandb/
+rotation_cache/
+.cache/
+.pytest_cache/
+.ruff_cache/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Data
+/datasets/
+/dataset/
+/data/
+/assets/raw/
+*.torch
+*.npz
+*.usd
+*.usda
+*.usdc
+*.usdz
+*.ply
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Project page lives on the gh-pages branch
+/page/
+/.github/

@@ -1,0 +1,18 @@
+name: vn_3dgs
+feature_mode: ${dataset.feature_mode}
+
+# VN-Transformer widths, paper operating point (Assaad et al. 2022 ranges).
+dim: 14
+depth: 4
+heads: 4
+dim_head: 8
+
+embed_dim: ${embed_dim}
+bias_epsilon: 1.0e-6
+flash_attn: true
+l2_dist_attn: false
+translation_invariant: true
+
+dropout: 0.05
+freeze: false
+pretrained_ckpt: null

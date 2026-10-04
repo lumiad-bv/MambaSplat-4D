@@ -1,0 +1,7 @@
+name: vn_bridge
+C: ${spatial.dim}
+feature_mode: ${dataset.feature_mode}
+hidden_dim: 256
+
+freeze: false
+pretrained_ckpt: null

@@ -1,0 +1,37 @@
+# One entry per asset; key = USD/USDC filename used in config_batch.yaml.
+# Convention at scale 1: characteristic size 1 m (wingspan for birds/airplanes,
+# fuselage length for helicopters, motor-to-motor for multi-copters), faces +X,
+# wingspan along Y, one animation cycle per loop at animation_speed_factor 1.
+# translation / orientation (Euler XYZ, deg) / scale fix assets off that convention.
+
+crow.usdc:
+  usd_path: "${AEROSPLAT_ASSET_ROOT}/birds/crow/crow.usdc"
+  type: "bird"
+  translation: [0.0, 0.0, 0.0]
+  orientation: [0.0, 0.0, 0.0]
+  scale: [1.0, 1.0, 1.0]
+  animation_speed_factor: 1.0
+
+DJI Inspire 3.usdc:
+  usd_path: "${AEROSPLAT_ASSET_ROOT}/drones/dji-inspire-3/DJI Inspire 3.usdc"
+  type: "drone"
+  translation: [0.0, 0.0, 0.0]
+  orientation: [0.0, 0.0, 0.0]
+  scale: [1.0, 1.0, 1.0]
+  animation_speed_factor: 1.0
+
+Helicopter_EC135_Special_Forces.usdc:
+  usd_path: "${AEROSPLAT_ASSET_ROOT}/helicopters/Helicopter_EC135_Special_Forces/Helicopter_EC135_Special_Forces.usdc"
+  type: "helicopter"
+  translation: [0.0, 0.0, 0.0]
+  orientation: [0.0, 0.0, 0.0]
+  scale: [1.0, 1.0, 1.0]
+  animation_speed_factor: 1.0
+
+cargo-aircraft.usdc:
+  usd_path: "${AEROSPLAT_ASSET_ROOT}/airplanes/cargo aircraft/cargo-aircraft.usdc"
+  type: "airplane"
+  translation: [0.0, 0.0, 0.0]
+  orientation: [0.0, 0.0, 0.0]
+  scale: [1.0, 1.0, 1.0]
+  animation_speed_factor: 1.0

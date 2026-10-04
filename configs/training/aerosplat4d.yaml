@@ -1,0 +1,56 @@
+# Recipe behind every AeroSplat-4D number in the paper:
+# AdamW lr 1e-3, wd 0.05, cosine with 3-epoch warmup, 50 epochs, batch 8,
+# label smoothing 0.1, no weight decay on norm/bias/Mamba parameters.
+epochs: 50
+batch_size: 8
+gradient_accumulation_steps: 1
+
+freeze:
+  spatial:     false
+  bridge:      false
+  temporal:    false
+  classifier:  false
+  frame_heads: false
+
+heads:
+  frame_aux: false
+  norm_aux:  false
+
+spatial_freeze: false
+bridge_freeze:  false
+
+optimizer:
+  name: adamw
+  lr: 1.0e-3
+  weight_decay: 0.05
+  betas: [0.9, 0.95]
+  no_decay_params: true
+
+scheduler:
+  name: cosine
+  T_max: ${training.epochs}
+  eta_min: 1.0e-6
+  warmup_epochs: 3
+
+loss:
+  classification: 1.0
+  contrastive:    0.0
+  label_smoothing: 0.1
+
+contrastive:
+  temperature: 0.1
+
+gradient_clip: 1.0
+
+checkpoint_dir: ${hydra:runtime.output_dir}
+save_every: 50
+save_best:  true
+val_freq:   1
+vis_freq:   5
+
+early_stopping:
+  enabled:    false
+  monitor:    val_acc
+  patience:   15
+  min_epochs: 20
+  min_delta:  0.0

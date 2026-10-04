@@ -1,0 +1,27 @@
+# @package _global_
+# MambaSplat-4D on AeroSplat-4D (LGM front-end), paper operating point.
+#   python -m mambasplat4d.cli.train experiment=aerosplat4d rotation.train=so3
+#   python -m mambasplat4d.cli.train experiment=aerosplat4d dataset.feature_mode=C
+defaults:
+  - override /dataset:  aerosplat4d
+  - override /spatial:  vn_3dgs
+  - override /temporal: vn_mamba
+  - override /bridge:   vn_bridge
+  - override /training: aerosplat4d
+  - _self_
+
+run_name: mambasplat_${dataset.feature_mode}
+
+rotation:
+  train: z          # none | z | so3
+  test:  none
+
+rotation_eval:
+  n_trials:    3
+  splits:      [test]
+  eval_mode:   batched
+  rotations_dir: ${paths.rotations_dir}
+
+hydra:
+  run:
+    dir: ${paths.results_root}/${run_name}/train_${rotation.train}/seed_${seed}

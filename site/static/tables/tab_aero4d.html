@@ -1,0 +1,67 @@
+<table class="results" id="tab-aero4d" data-source="tables/lgm/tab_aero4d.tex">
+<thead>
+<tr>
+<th></th>
+<th colspan="4" class="col-rule-left">Accuracy</th>
+<th colspan="4" class="col-rule-left">Per-class @ SO(3)/SO(3)</th>
+</tr>
+<tr>
+<th>Model</th>
+<th class="col-rule-left">z/SO(3)pf</th>
+<th>z/z</th>
+<th>z/SO(3)</th>
+<th>SO(3)/SO(3)</th>
+<th class="col-rule-left">Bird</th>
+<th>Drone</th>
+<th>Airpl.</th>
+<th>Heli.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Mamba4D</th>
+<td class="col-rule-left">43.4 ± 1.2</td>
+<td class="best">83.4 ± 1.3</td>
+<td>43.9 ± 1.8</td>
+<td>72.9 ± 1.5</td>
+<td class="col-rule-left">85</td>
+<td>69</td>
+<td class="best">79</td>
+<td>50</td>
+</tr>
+<tr>
+<th scope="row">P4Transformer</th>
+<td class="col-rule-left">38.4 ± 1.0</td>
+<td>80.5 ± 1.5</td>
+<td>46.2 ± 1.3</td>
+<td>69.2 ± 0.7</td>
+<td class="col-rule-left">77</td>
+<td>70</td>
+<td class="second">72</td>
+<td>48</td>
+</tr>
+<tr class="ours group-start">
+<th scope="row"><strong>MambaSplat-4D</strong> E(C)</th>
+<td class="second col-rule-left">79.6 ± 4.7</td>
+<td>79.5 ± 4.7</td>
+<td class="second">79.6 ± 4.7</td>
+<td class="second">78.2 ± 2.8</td>
+<td class="second col-rule-left">86</td>
+<td class="second">76</td>
+<td>70</td>
+<td class="second">77</td>
+</tr>
+<tr class="ours">
+<th scope="row"><strong>MambaSplat-4D</strong> E(X)</th>
+<td class="best col-rule-left">80.9 ± 1.5</td>
+<td class="second">80.9 ± 1.5</td>
+<td class="best">80.9 ± 1.5</td>
+<td class="best">80.6 ± 2.0</td>
+<td class="best col-rule-left">90</td>
+<td class="best">77</td>
+<td>69</td>
+<td class="best">82</td>
+</tr>
+</tbody>
+</table>
+<p class="provenance">Generated from <code>tables/lgm/tab_aero4d.tex</code> (emitter run 2026-09-29T20:18:43Z); seeds 42, 43, 44  (n=3); rotation trials 3; split val  [24 assets (bird 8/drone 8/airplane 4/helicopter 4)]. Gold = best per column, underline = second best.</p>

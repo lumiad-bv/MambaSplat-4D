@@ -52,6 +52,9 @@ img, svg, video { max-width: 100%; height: auto; }
 section { padding-block: 56px; scroll-margin-top: calc(var(--topbar-h) + 12px); }
 section + section { border-top: 1px solid var(--line); }
 .lede { font-size: 18px; }
+.tldr { font-size: 18px; padding: 14px 18px; margin-bottom: 28px; background: var(--surface); border-left: 4px solid var(--gold); border-radius: var(--radius); }
+.tldr b { color: var(--navy); }
+.concepts { color: var(--muted); }
 
 .topbar {
   position: sticky; top: 0; z-index: 20;

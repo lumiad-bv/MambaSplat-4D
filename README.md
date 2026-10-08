@@ -1,17 +1,39 @@
-# MambaSplat-4D
+<div align="center">
 
-Rotation-invariant 4D classification of Gaussian Splatting sequences.
+# MambaSplat-4D: Rotation-Invariant 4D Classification of Gaussian Splatting Sequences
 
-[Project page](https://lumiad-bv.github.io/MambaSplat-4D/) ·
-[arXiv](https://arxiv.org/abs/TODO-LINK) ·
-[AeroSplat-4D dataset](https://huggingface.co/datasets/alessandrolumiad/AeroSplat-4D) ·
-[Weights](https://huggingface.co/alessandrolumiad/MambaSplat-4D)
+Alessandro Verdiesen · H. Peter Hofstee · Zaid Al-Ars
+
+Delft University of Technology · **ACCV 2026**
+
+<a href="https://github.com/lumiad-bv/MambaSplat-4D/raw/main/ACCV/MambaSplat_4D.pdf"><img src="https://img.shields.io/badge/Paper-ACCV%202026-b31b1b" alt="Paper"></a>
+<!-- <a href="https://arxiv.org/abs/TODO-LINK"><img src="https://img.shields.io/badge/arXiv-TODO--LINK-b31b1b" alt="arXiv"></a> -->
+<a href="https://lumiad-bv.github.io/MambaSplat-4D/"><img src="https://img.shields.io/badge/Project_Page-MambaSplat--4D-green" alt="Project Page"></a>
+<a href="https://huggingface.co/datasets/alessandrolumiad/AeroSplat-4D"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-AeroSplat--4D-blue" alt="Dataset"></a>
+<a href="https://huggingface.co/alessandrolumiad/MambaSplat-4D"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Weights-MambaSplat--4D-blue" alt="Weights"></a>
+
+</div>
 
 ![MambaSplat-4D overview](assets/teaser.png)
 
 (1) Multi-camera video, (2) reconstructed per frame into 3D Gaussians (14 attributes each, arbitrary
 rotation per frame), (3) VN-Transformer encodes each frame, ★ VN-In bridge makes features
 rotation-invariant, (4) Mamba runs over the T frames, (5) class.
+
+This work presents **MambaSplat-4D**, a model that classifies sequences of 3D Gaussian Splats
+(bird, drone, airplane, helicopter) with predictions that are rotation-invariant by construction,
+even when every frame is rotated independently. 3D Gaussian Splatting represents an object as
+thousands of small coloured 3D ellipsoids; Vector Neurons are network layers whose features rotate
+together with the input; Mamba is a state-space sequence model whose cost grows linearly with the
+number of frames.
+
+- **Gaussian Lifting**: maps all 14 Gaussian parameters (position, quaternion, scale, opacity, DC
+  color) into an equivariant feature space, where a Vector Neuron transformer relates the Gaussians.
+- **VN-In bridge**: a learned equivariant-frame projection that turns these features into
+  rotation-invariant scalars, recovering up to the 3C-3 independent SO(3) invariants. On temporal
+  4D benchmarks it reaches VNStdFeature's accuracy with 75x fewer bridge parameters.
+- **AeroSplat-4D**: a synthetic dataset of temporal 4DGS sequences of aerial objects, released with
+  its generation pipeline, the architecture, weights and evaluations.
 
 ## Install
 
@@ -141,10 +163,10 @@ Code MIT, weights CC BY-NC 4.0, dataset per asset (see [ATTRIBUTION.md](https://
 ## Citation
 
 ```bibtex
-@article{verdiesen2026mambasplat4d,
-  title   = {MambaSplat-4D: Rotation-Invariant 4D Classification of Gaussian Splatting Sequences},
-  author  = {Verdiesen, Alessandro and Hofstee, H. Peter and Al-Ars, Zaid},
-  journal = {arXiv preprint arXiv:TODO-LINK},
-  year    = {2026}
+@inproceedings{verdiesen2026mambasplat4d,
+  title     = {{MambaSplat-4D}: Rotation-Invariant {4D} Classification of {Gaussian} Splatting Sequences},
+  author    = {Verdiesen, Alessandro and Hofstee, H. Peter and Al-Ars, Zaid},
+  booktitle = {Asian Conference on Computer Vision (ACCV)},
+  year      = {2026}
 }
 ```
